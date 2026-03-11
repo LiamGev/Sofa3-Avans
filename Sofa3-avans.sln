@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sofa3Lib", "Sofa3Lib\Sofa3Lib.csproj", "{F812C43B-C618-4243-B572-C53F524ECDFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sofa3Tests", "Sofa3Tests\Sofa3Tests.csproj", "{797DBC3B-01B2-438F-AC94-B4FF228C2233}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F812C43B-C618-4243-B572-C53F524ECDFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F812C43B-C618-4243-B572-C53F524ECDFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F812C43B-C618-4243-B572-C53F524ECDFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F812C43B-C618-4243-B572-C53F524ECDFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{797DBC3B-01B2-438F-AC94-B4FF228C2233}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{797DBC3B-01B2-438F-AC94-B4FF228C2233}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{797DBC3B-01B2-438F-AC94-B4FF228C2233}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{797DBC3B-01B2-438F-AC94-B4FF228C2233}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {63F08344-9BE6-4EB6-827B-25AAA364F0B2}
+	EndGlobalSection
+EndGlobal
