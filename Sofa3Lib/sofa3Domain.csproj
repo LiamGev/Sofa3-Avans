@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Adapters\" />
-    <Folder Include="Entities\" />
-    <Folder Include="Factories\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Observers\" />
-    <Folder Include="States\" />
-    <Folder Include="Strategies\" />
     <Folder Include="Templates\" />
   </ItemGroup>
 

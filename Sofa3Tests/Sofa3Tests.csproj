@@ -25,4 +25,10 @@
     <Folder Include="Application\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\sofa3app\sofa3app.csproj" />
+    <ProjectReference Include="..\sofa3infra\sofa3infra.csproj" />
+    <ProjectReference Include="..\Sofa3Lib\sofa3Domain.csproj" />
+  </ItemGroup>
+
 </Project>
