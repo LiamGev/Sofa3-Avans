@@ -6,13 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="Repos\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Sofa3Lib\sofa3Domain.csproj" />
-  </ItemGroup>
-
 </Project>

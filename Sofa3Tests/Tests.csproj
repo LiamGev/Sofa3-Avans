@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>
@@ -21,14 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\" />
-    <Folder Include="Application\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\sofa3app\sofa3app.csproj" />
-    <ProjectReference Include="..\sofa3infra\sofa3infra.csproj" />
-    <ProjectReference Include="..\Sofa3Lib\sofa3Domain.csproj" />
+    <ProjectReference Include="..\sofa3app\App.csproj" />
+    <ProjectReference Include="..\sofa3infra\Infra.csproj" />
+    <ProjectReference Include="..\Sofa3Lib\Domain.csproj" />
   </ItemGroup>
 
 </Project>

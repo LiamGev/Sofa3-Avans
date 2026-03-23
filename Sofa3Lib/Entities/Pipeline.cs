@@ -1,6 +1,6 @@
-﻿using sofa3Domain.Interfaces;
+﻿using Domain.Interfaces;
 
-namespace sofa3Domain.Entities
+namespace Domain.Entities
 {
     public class Pipeline
     {

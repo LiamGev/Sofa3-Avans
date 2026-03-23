@@ -1,8 +1,8 @@
-﻿using sofa3Domain.Entities;
-using sofa3Domain.Interfaces;
-using sofa3Domain.States;
+﻿using Domain.Entities;
+using Domain.Interfaces;
+using Domain.States;
 
-namespace sofa3Domain.Factories
+namespace Domain.Factories
 {
     public class StoryFactory : IBacklogItemFactory
     {

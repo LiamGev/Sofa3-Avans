@@ -1,4 +1,4 @@
-﻿namespace sofa3Domain.Interfaces
+﻿namespace Domain.Interfaces
 {
     public interface IPipelineStrategy
     {

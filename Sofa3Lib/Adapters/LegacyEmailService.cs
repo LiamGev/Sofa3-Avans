@@ -1,4 +1,4 @@
-﻿namespace sofa3Domain.Adapters
+﻿namespace Domain.Adapters
 {
     public class LegacyEmailService
     {

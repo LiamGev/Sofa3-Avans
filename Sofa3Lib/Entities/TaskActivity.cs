@@ -1,4 +1,4 @@
-﻿namespace sofa3Domain.Entities
+﻿namespace Domain.Entities
 {
     public class TaskActivity
     {

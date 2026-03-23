@@ -1,7 +1,7 @@
-﻿using sofa3Domain.Entities;
-using sofa3Domain.Interfaces;
+﻿using Domain.Entities;
+using Domain.Interfaces;
 
-namespace sofa3Domain.States
+namespace Domain.States
 {
     public class InProgressState : IBacklogItemState
     {

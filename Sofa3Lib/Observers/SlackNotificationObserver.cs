@@ -1,6 +1,6 @@
-﻿using sofa3Domain.Interfaces;
+﻿using Domain.Interfaces;
 
-namespace sofa3Domain.Observers
+namespace Domain.Observers
 {
     public class SlackNotificationObserver : INotificationObserver
     {

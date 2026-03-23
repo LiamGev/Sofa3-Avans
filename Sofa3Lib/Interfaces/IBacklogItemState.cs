@@ -1,6 +1,6 @@
-﻿using sofa3Domain.Entities;
+﻿using Domain.Entities;
 
-namespace sofa3Domain.Interfaces
+namespace Domain.Interfaces
 {
     public interface IBacklogItemState
     {
