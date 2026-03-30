@@ -6,7 +6,7 @@ namespace App.Services
 {
     public class PipelineService
     {
-        public List<string> RunBasicPipeline()
+        public static List<string> RunBasicPipeline()
         {
             var strategy = new BasicPipelineStrategy();
             var pipeline = new Pipeline("Basic Pipeline", strategy);
@@ -15,7 +15,7 @@ namespace App.Services
             return process.Execute();
         }
 
-        public List<string> RunFullPipeline()
+        public static List<string> RunFullPipeline()
         {
             var strategy = new FullPipelineStrategy();
             var pipeline = new Pipeline("Full Pipeline", strategy);
