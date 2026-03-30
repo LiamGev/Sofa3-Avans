@@ -9,7 +9,8 @@ namespace App.Services
 
         public BacklogService(IProjectRepository projectRepository)
         {
-            _projectRepository = projectRepository ?? throw new ArgumentNullException(nameof(projectRepository));
+            ArgumentNullException.ThrowIfNull(projectRepository);
+            _projectRepository = projectRepository;
         }
 
         public BacklogItem CreateStory(Guid projectId, string title, string description)

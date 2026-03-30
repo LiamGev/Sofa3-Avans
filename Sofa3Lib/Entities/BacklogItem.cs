@@ -44,7 +44,7 @@ namespace Domain.Entities
         public void AttachObserver(INotificationObserver observer)
         {
             if (observer == null)
-                throw new ArgumentNullException.ThrowIfNull(nameof(observer));
+                throw new ArgumentNullException.ThrowIfNull(observer);
 
             _observers.Add(observer);
         }

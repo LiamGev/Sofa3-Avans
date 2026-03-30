@@ -21,7 +21,7 @@
         public void AddBacklogItem(BacklogItem item)
         {
             if (item == null)
-                throw new ArgumentNullException.ThrowIfNull(nameof(item));
+                throw new ArgumentNullException.ThrowIfNull(item);
 
             _backlogItems.Add(item);
         }
