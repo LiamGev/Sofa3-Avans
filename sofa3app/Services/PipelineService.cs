@@ -4,7 +4,7 @@ using Domain.Templates;
 
 namespace App.Services
 {
-    public class PipelineService
+    public static class PipelineService
     {
         public static List<string> RunBasicPipeline()
         {

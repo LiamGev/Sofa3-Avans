@@ -90,7 +90,7 @@ namespace App.Services
                    ?? throw new InvalidOperationException("Project not found.");
         }
 
-        private BacklogItem GetBacklogItem(Project project, Guid backlogItemId)
+        private static BacklogItem GetBacklogItem(Project project, Guid backlogItemId)
         {
             return project.GetBacklogItemById(backlogItemId)
                    ?? throw new InvalidOperationException("Backlog item not found.");
