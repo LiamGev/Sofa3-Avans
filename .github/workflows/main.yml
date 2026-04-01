@@ -62,25 +62,25 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          & "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin `
-            /k:"LiamGev_Sofa3-Avans" `
-            /o:"liamgevkey" `
-            /d:sonar.token="$env:SONAR_TOKEN" `
-            /d:sonar.cs.vstest.reportsPaths="Sofa3Tests\TestResults\*.trx"
-            /d:sonar.cs.opencover.reportsPaths="Sofa3Tests\TestResults\coverage.opencover.xml"
+          & "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"LiamGev_Sofa3-Avans" /o:"liamgevkey" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.vstest.reportsPaths="Sofa3Tests\TestResults\*.trx" /d:sonar.cs.opencover.reportsPaths="Sofa3Tests\TestResults\coverage.opencover.xml"
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
       - name: Test with coverage
         run: >
-          dotnet test Sofa3Tests/Sofa3Tests.csproj
+          dotnet test Sofa3Tests/Tests.csproj
           --no-build
           --configuration Release
           --logger "trx;LogFileName=test-results.trx"
           /p:CollectCoverage=true
           /p:CoverletOutputFormat=opencover
           /p:CoverletOutput=TestResults/coverage.opencover.xml
+
+      - name: Show TestResults files
+        shell: powershell
+        run: |
+          Get-ChildItem -Recurse Sofa3Tests\TestResults
 
       - name: End SonarQube Cloud analysis
         env:
