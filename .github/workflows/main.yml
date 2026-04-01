@@ -24,9 +24,6 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Check .NET info
-        run: dotnet --info
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -54,6 +51,9 @@ jobs:
           New-Item -Path "${{ runner.temp }}\scanner" -ItemType Directory -Force
           dotnet tool update dotnet-sonarscanner --tool-path "${{ runner.temp }}\scanner"
 
+      - name: Install dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -62,25 +62,21 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          & "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"LiamGev_Sofa3-Avans" /o:"liamgevkey" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.vstest.reportsPaths="Sofa3Tests\TestResults\*.trx" /d:sonar.cs.opencover.reportsPaths="Sofa3Tests\TestResults\coverage.opencover.xml"
+          & "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"LiamGev_Sofa3-Avans" /o:"liamgevkey" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.vstest.reportsPaths="**/*.trx" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" /d:sonar.verbose=true
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      - name: Test with coverage
-        run: >
-          dotnet test Sofa3Tests/Tests.csproj
-          --no-build
-          --configuration Release
-          --logger "trx;LogFileName=test-results.trx"
-          /p:CollectCoverage=true
-          /p:CoverletOutputFormat=opencover
-          /p:CoverletOutput=TestResults/coverage.opencover.xml
-
-      - name: Show TestResults files
+      - name: Run tests with coverage
         shell: powershell
         run: |
-          Get-ChildItem -Recurse Sofa3Tests\TestResults
+          dotnet-coverage collect "dotnet test Sofa3Tests/Tests.csproj --no-build --configuration Release --logger `"trx;LogFileName=test-results.trx`"" -f xml -o "coverage.xml"
+
+      - name: Show coverage files
+        shell: powershell
+        run: |
+          Get-ChildItem -Recurse .
+          Get-Content coverage.xml | Select-Object -First 40
 
       - name: End SonarQube Cloud analysis
         env:
