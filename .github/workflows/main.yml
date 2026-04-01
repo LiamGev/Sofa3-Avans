@@ -66,15 +66,15 @@ jobs:
             /k:"LiamGev_Sofa3-Avans" `
             /o:"liamgevkey" `
             /d:sonar.token="$env:SONAR_TOKEN" `
-            /d:sonar.cs.vstest.reportsPaths="Tests\TestResults\*.trx" `
-            /d:sonar.cs.opencover.reportsPaths="Tests\TestResults\coverage.opencover.xml"
+            /d:sonar.cs.vstest.reportsPaths="Sofa3Tests\TestResults\*.trx"
+            /d:sonar.cs.opencover.reportsPaths="Sofa3Tests\TestResults\coverage.opencover.xml"
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
       - name: Test with coverage
         run: >
-          dotnet test Tests/Tests.csproj
+          dotnet test Sofa3Tests/Sofa3Tests.csproj
           --no-build
           --configuration Release
           --logger "trx;LogFileName=test-results.trx"
