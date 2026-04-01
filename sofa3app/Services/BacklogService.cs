@@ -9,13 +9,13 @@ namespace App.Services
 
         public BacklogService(IProjectRepository projectRepository)
         {
-            _projectRepository = projectRepository ?? throw new ArgumentNullException(nameof(projectRepository));
+            ArgumentNullException.ThrowIfNull(projectRepository);
+            _projectRepository = projectRepository;
         }
 
         public BacklogItem CreateStory(Guid projectId, string title, string description)
         {
-            var project = _projectRepository.GetById(projectId)
-                          ?? throw new InvalidOperationException("Project not found.");
+            var project = GetProject(projectId);
 
             IBacklogItemFactory factory = new Domain.Factories.StoryFactory();
             var item = factory.Create(title, description);
@@ -28,8 +28,7 @@ namespace App.Services
 
         public BacklogItem CreateBug(Guid projectId, string title, string description)
         {
-            var project = _projectRepository.GetById(projectId)
-                          ?? throw new InvalidOperationException("Project not found.");
+            var project = GetProject(projectId);
 
             IBacklogItemFactory factory = new Domain.Factories.BugFactory();
             var item = factory.Create(title, description);
@@ -42,37 +41,47 @@ namespace App.Services
 
         public void AddActivityToBacklogItem(Guid projectId, Guid backlogItemId, string activityTitle)
         {
-            var item = GetBacklogItem(projectId, backlogItemId);
+            var project = GetProject(projectId);
+            var item = GetBacklogItem(project, backlogItemId);
+
             item.AddActivity(activityTitle);
-            _projectRepository.Update(GetProject(projectId));
+            _projectRepository.Update(project);
         }
 
         public void AddMessageToBacklogItem(Guid projectId, Guid backlogItemId, string author, string content)
         {
-            var item = GetBacklogItem(projectId, backlogItemId);
+            var project = GetProject(projectId);
+            var item = GetBacklogItem(project, backlogItemId);
+
             item.AddMessage(author, content);
-            _projectRepository.Update(GetProject(projectId));
+            _projectRepository.Update(project);
         }
 
         public void StartWork(Guid projectId, Guid backlogItemId)
         {
-            var item = GetBacklogItem(projectId, backlogItemId);
+            var project = GetProject(projectId);
+            var item = GetBacklogItem(project, backlogItemId);
+
             item.StartWork();
-            _projectRepository.Update(GetProject(projectId));
+            _projectRepository.Update(project);
         }
 
         public void MoveToTesting(Guid projectId, Guid backlogItemId)
         {
-            var item = GetBacklogItem(projectId, backlogItemId);
+            var project = GetProject(projectId);
+            var item = GetBacklogItem(project, backlogItemId);
+
             item.MoveToTesting();
-            _projectRepository.Update(GetProject(projectId));
+            _projectRepository.Update(project);
         }
 
         public void Complete(Guid projectId, Guid backlogItemId)
         {
-            var item = GetBacklogItem(projectId, backlogItemId);
+            var project = GetProject(projectId);
+            var item = GetBacklogItem(project, backlogItemId);
+
             item.Complete();
-            _projectRepository.Update(GetProject(projectId));
+            _projectRepository.Update(project);
         }
 
         private Project GetProject(Guid projectId)
@@ -81,10 +90,8 @@ namespace App.Services
                    ?? throw new InvalidOperationException("Project not found.");
         }
 
-        private BacklogItem GetBacklogItem(Guid projectId, Guid backlogItemId)
+        private static BacklogItem GetBacklogItem(Project project, Guid backlogItemId)
         {
-            var project = GetProject(projectId);
-
             return project.GetBacklogItemById(backlogItemId)
                    ?? throw new InvalidOperationException("Backlog item not found.");
         }
