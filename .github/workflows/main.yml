@@ -57,11 +57,34 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build and analyze
+      - name: Begin SonarQube Cloud analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          & "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"LiamGev_Sofa3-Avans" /o:"liamgevkey" /d:sonar.token="$env:SONAR_TOKEN"
-          dotnet build --no-restore
+          & "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin `
+            /k:"LiamGev_Sofa3-Avans" `
+            /o:"liamgevkey" `
+            /d:sonar.token="$env:SONAR_TOKEN" `
+            /d:sonar.cs.vstest.reportsPaths="Tests\TestResults\*.trx" `
+            /d:sonar.cs.opencover.reportsPaths="Tests\TestResults\coverage.opencover.xml"
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test with coverage
+        run: >
+          dotnet test Tests/Tests.csproj
+          --no-build
+          --configuration Release
+          --logger "trx;LogFileName=test-results.trx"
+          /p:CollectCoverage=true
+          /p:CoverletOutputFormat=opencover
+          /p:CoverletOutput=TestResults/coverage.opencover.xml
+
+      - name: End SonarQube Cloud analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: |
           & "${{ runner.temp }}\scanner\dotnet-sonarscanner" end /d:sonar.token="$env:SONAR_TOKEN"
