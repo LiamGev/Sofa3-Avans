@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.States;
 using Domain.Strategies;
 using Xunit;
 
@@ -43,7 +44,7 @@ namespace Tests.Domain
                 new DateTime(2025, 1, 14),
                 "Release");
 
-            var item = new BacklogItem("Story", "Description", "Story", new Domain.States.ToDoState());
+            var item = new BacklogItem("Story", "Description", "Story", new ToDoState());
 
             sprint.AddBacklogItem(item);
 
@@ -61,7 +62,7 @@ namespace Tests.Domain
 
             sprint.StartSprint();
 
-            var item = new BacklogItem("Story", "Description", "Story", new Domain.States.ToDoState());
+            var item = new BacklogItem("Story", "Description", "Story", new ToDoState());
 
             Assert.Throws<InvalidOperationException>(() => sprint.AddBacklogItem(item));
         }
