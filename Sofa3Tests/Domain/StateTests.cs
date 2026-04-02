@@ -130,5 +130,43 @@ namespace Tests.Domain
 
             Assert.Equal("Ready For Testing", item.CurrentState.Name);
         }
+
+        [Fact]
+        public void DoneState_RejectDone_Moves_Item_Back_To_ToDo()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+
+            item.AddActivity("Implement feature");
+            var activity = item.Activities.First();
+            item.CompleteActivity(activity.Id);
+
+            item.StartWork();
+            item.MoveToReadyForTesting();
+            item.StartTesting();
+            item.ApproveTesting();
+            item.ApproveDone();
+
+            item.RejectDone();
+
+            Assert.Equal("To Do", item.CurrentState.Name);
+        }
+
+        [Fact]
+        public void DoneState_Start_ThrowsInvalidOperationException()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+
+            item.AddActivity("Implement feature");
+            var activity = item.Activities.First();
+            item.CompleteActivity(activity.Id);
+
+            item.StartWork();
+            item.MoveToReadyForTesting();
+            item.StartTesting();
+            item.ApproveTesting();
+            item.ApproveDone();
+
+            Assert.Throws<InvalidOperationException>(() => item.StartWork());
+        }
     }
 }

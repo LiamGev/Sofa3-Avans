@@ -1,5 +1,7 @@
-﻿using Domain.Entities;
+﻿using Domain.Adapters;
+using Domain.Entities;
 using Domain.Interfaces;
+using Domain.Observers;
 using Domain.States;
 using Moq;
 using Xunit;
@@ -55,6 +57,30 @@ namespace Tests.Domain
             observerMock.Verify(
                 o => o.Update(It.Is<string>(msg => msg.Contains("Testing failed"))),
                 Times.Once);
+        }
+
+        [Fact]
+        public void EmailNotificationObserver_Sends_Message_To_EmailChannel()
+        {
+            var channel = new EmailChannel();
+            var observer = new EmailNotificationObserver(channel);
+
+            observer.Update("Item changed");
+
+            Assert.Single(channel.SentMessages);
+            Assert.Equal("EMAIL: Item changed", channel.SentMessages[0]);
+        }
+
+        [Fact]
+        public void SlackNotificationObserver_Sends_Message_To_SlackChannel()
+        {
+            var channel = new SlackChannel();
+            var observer = new SlackNotificationObserver(channel);
+
+            observer.Update("Item changed");
+
+            Assert.Single(channel.SentMessages);
+            Assert.Equal("SLACK: Item changed", channel.SentMessages[0]);
         }
     }
 }
