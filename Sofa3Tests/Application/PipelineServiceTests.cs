@@ -45,7 +45,7 @@ namespace Tests.Application
             Assert.Contains("Code Analysis", result);
             Assert.Contains("Deploy", result);
             Assert.Contains("Publish results", result);
-            Assert.Contains("Finalize pipeline", result);
+            Assert.Contains("Finalize full pipeline", result);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace Tests.Application
             Assert.Equal("Code Analysis", result[4]);
             Assert.Equal("Deploy", result[5]);
             Assert.Equal("Publish results", result[6]);
-            Assert.Equal("Finalize pipeline", result[7]);
+            Assert.Equal("Finalize full pipeline", result[7]);
         }
 
         [Fact]
@@ -71,6 +71,7 @@ namespace Tests.Application
             Assert.DoesNotContain("Code Analysis", result);
             Assert.DoesNotContain("Deploy", result);
             Assert.DoesNotContain("Prepare full pipeline", result);
+            Assert.DoesNotContain("Finalize full pipeline", result);
         }
 
         [Fact]
@@ -81,6 +82,7 @@ namespace Tests.Application
             Assert.Contains("Code Analysis", result);
             Assert.Contains("Deploy", result);
             Assert.Contains("Prepare full pipeline", result);
+            Assert.Contains("Finalize full pipeline", result);
         }
 
         [Fact]
@@ -102,7 +104,7 @@ namespace Tests.Application
             Assert.Contains("Stage: Deploy", result);
             Assert.Contains("Deploy to Test Environment", result);
             Assert.Contains("Publish results", result);
-            Assert.Contains("Finalize pipeline", result);
+            Assert.Contains("Finalize full pipeline", result);
         }
     }
 }
