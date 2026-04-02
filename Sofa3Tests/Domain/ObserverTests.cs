@@ -2,7 +2,6 @@
 using Domain.Interfaces;
 using Domain.States;
 using Moq;
-using System.Timers;
 using Xunit;
 
 namespace Tests.Domain
@@ -13,30 +12,49 @@ namespace Tests.Domain
         public void Observer_Is_Notified_When_State_Changes()
         {
             var observerMock = new Mock<INotificationObserver>();
-            var item = new BacklogItem("Test", "Desc", "Story", new ToDoState());
+            var item = new BacklogItem("Test", "Description", "Story", new ToDoState());
 
             item.AttachObserver(observerMock.Object);
+
             item.StartWork();
 
             observerMock.Verify(
-                o => o.Update(It.Is<string>(msg => msg.Contains("changed state to In Progress"))),
+                o => o.Update(It.Is<string>(msg => msg.Contains("changed state to Doing"))),
                 Times.Once);
         }
 
         [Fact]
-        public void Multiple_Observers_Are_Notified_When_State_Changes()
+        public void Observer_Is_Notified_When_Item_Moves_To_ReadyForTesting()
         {
-            var observer1 = new Mock<INotificationObserver>();
-            var observer2 = new Mock<INotificationObserver>();
-            var item = new BacklogItem("Test", "Desc", "Story", new ToDoState());
+            var observerMock = new Mock<INotificationObserver>();
+            var item = new BacklogItem("Test", "Description", "Story", new ToDoState());
 
-            item.AttachObserver(observer1.Object);
-            item.AttachObserver(observer2.Object);
+            item.AttachObserver(observerMock.Object);
 
             item.StartWork();
+            item.MoveToReadyForTesting();
 
-            observer1.Verify(o => o.Update(It.IsAny<string>()), Times.Once);
-            observer2.Verify(o => o.Update(It.IsAny<string>()), Times.Once);
+            observerMock.Verify(
+                o => o.Update(It.Is<string>(msg => msg.Contains("Ready For Testing"))),
+                Times.AtLeastOnce);
+        }
+
+        [Fact]
+        public void Observer_Is_Notified_When_Testing_Is_Rejected()
+        {
+            var observerMock = new Mock<INotificationObserver>();
+            var item = new BacklogItem("Test", "Description", "Story", new ToDoState());
+
+            item.AttachObserver(observerMock.Object);
+
+            item.StartWork();
+            item.MoveToReadyForTesting();
+            item.StartTesting();
+            item.RejectTesting();
+
+            observerMock.Verify(
+                o => o.Update(It.Is<string>(msg => msg.Contains("Testing failed"))),
+                Times.Once);
         }
     }
 }

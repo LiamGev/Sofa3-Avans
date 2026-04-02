@@ -39,7 +39,7 @@ namespace Tests.Application
 
             Assert.NotNull(result);
             Assert.Contains("Validate pipeline", result);
-            Assert.Contains("Prepare pipeline", result);
+            Assert.Contains("Prepare full pipeline", result);
             Assert.Contains("Build", result);
             Assert.Contains("Test", result);
             Assert.Contains("Code Analysis", result);
@@ -54,7 +54,7 @@ namespace Tests.Application
             var result = PipelineService.RunFullPipeline();
 
             Assert.Equal("Validate pipeline", result[0]);
-            Assert.Equal("Prepare pipeline", result[1]);
+            Assert.Equal("Prepare full pipeline", result[1]);
             Assert.Equal("Build", result[2]);
             Assert.Equal("Test", result[3]);
             Assert.Equal("Code Analysis", result[4]);
@@ -70,6 +70,7 @@ namespace Tests.Application
 
             Assert.DoesNotContain("Code Analysis", result);
             Assert.DoesNotContain("Deploy", result);
+            Assert.DoesNotContain("Prepare full pipeline", result);
         }
 
         [Fact]
@@ -79,6 +80,7 @@ namespace Tests.Application
 
             Assert.Contains("Code Analysis", result);
             Assert.Contains("Deploy", result);
+            Assert.Contains("Prepare full pipeline", result);
         }
 
         [Fact]
@@ -88,7 +90,7 @@ namespace Tests.Application
 
             Assert.NotNull(result);
             Assert.Contains("Validate pipeline", result);
-            Assert.Contains("Prepare pipeline", result);
+            Assert.Contains("Prepare full pipeline", result);
             Assert.Contains("Stage: Source", result);
             Assert.Contains("Fetch Source", result);
             Assert.Contains("Stage: Build", result);
