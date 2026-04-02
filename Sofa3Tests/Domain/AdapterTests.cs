@@ -11,7 +11,7 @@ namespace Tests.Domain
             var legacyService = new LegacyEmailService();
             var adapter = new LegacyEmailAdapter(legacyService);
 
-            adapter.Update("Test message");
+            adapter.Send("Test message");
 
             Assert.Single(legacyService.LegacyMessages);
             Assert.Equal("Test message", legacyService.LegacyMessages[0]);

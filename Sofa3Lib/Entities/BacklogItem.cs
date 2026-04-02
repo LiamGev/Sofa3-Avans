@@ -36,6 +36,19 @@ namespace Domain.Entities
             _activities.Add(new TaskActivity(title));
         }
 
+        public void CompleteActivity(Guid activityId)
+        {
+            var activity = _activities.FirstOrDefault(a => a.Id == activityId)
+                ?? throw new InvalidOperationException("Activity not found.");
+
+            activity.MarkAsCompleted();
+        }
+
+        public bool AreAllActivitiesCompleted()
+        {
+            return _activities.All(a => a.IsCompleted);
+        }
+
         public void AddMessage(string author, string content)
         {
             _messages.Add(new Message(author, content));
@@ -63,19 +76,12 @@ namespace Domain.Entities
             NotifyObservers($"Backlog item '{Title}' changed state to {CurrentState.Name}.");
         }
 
-        public void StartWork()
-        {
-            CurrentState.Start(this);
-        }
-
-        public void MoveToTesting()
-        {
-            CurrentState.MoveToTesting(this);
-        }
-
-        public void Complete()
-        {
-            CurrentState.Complete(this);
-        }
+        public void StartWork() => CurrentState.Start(this);
+        public void MoveToReadyForTesting() => CurrentState.MoveToReadyForTesting(this);
+        public void StartTesting() => CurrentState.StartTesting(this);
+        public void ApproveTesting() => CurrentState.ApproveTesting(this);
+        public void RejectTesting() => CurrentState.RejectTesting(this);
+        public void ApproveDone() => CurrentState.ApproveDone(this);
+        public void RejectDone() => CurrentState.RejectDone(this);
     }
 }

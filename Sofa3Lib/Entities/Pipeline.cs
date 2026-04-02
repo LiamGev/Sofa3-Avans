@@ -4,6 +4,8 @@ namespace Domain.Entities
 {
     public class Pipeline
     {
+        private readonly List<IPipelineComponent> _components = new();
+
         public string Name { get; private set; }
         public IPipelineStrategy Strategy { get; private set; }
 
@@ -16,8 +18,25 @@ namespace Domain.Entities
             Strategy = strategy ?? throw new ArgumentNullException(nameof(strategy));
         }
 
+        public void AddComponent(IPipelineComponent component)
+        {
+            _components.Add(component);
+        }
+
         public List<string> Run()
         {
+            if (_components.Any())
+            {
+                var result = new List<string>();
+
+                foreach (var component in _components)
+                {
+                    result.AddRange(component.Execute());
+                }
+
+                return result;
+            }
+
             return Strategy.Execute();
         }
 

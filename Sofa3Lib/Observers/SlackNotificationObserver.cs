@@ -4,11 +4,16 @@ namespace Domain.Observers
 {
     public class SlackNotificationObserver : INotificationObserver
     {
-        public List<string> SentMessages { get; } = new();
+        private readonly INotificationChannel _channel;
+
+        public SlackNotificationObserver(INotificationChannel channel)
+        {
+            _channel = channel;
+        }
 
         public void Update(string message)
         {
-            SentMessages.Add($"SLACK: {message}");
+            _channel.Send($"SLACK: {message}");
         }
     }
 }

@@ -27,6 +27,7 @@ namespace Tests.Application
             Assert.Single(project.BacklogItems);
             Assert.Equal("Story", item.Type);
             Assert.Equal("New Story", item.Title);
+            Assert.Equal("To Do", item.CurrentState.Name);
         }
 
         [Fact]
@@ -53,6 +54,7 @@ namespace Tests.Application
             Assert.Single(project.BacklogItems);
             Assert.Equal("Bug", item.Type);
             Assert.Equal("New Bug", item.Title);
+            Assert.Equal("To Do", item.CurrentState.Name);
         }
 
         [Fact]
@@ -63,6 +65,40 @@ namespace Tests.Application
 
             Assert.Throws<InvalidOperationException>(() =>
                 service.CreateBug(Guid.NewGuid(), "Bug", "Description"));
+        }
+
+        [Fact]
+        public void CreateTask_Adds_Task_To_Project()
+        {
+            var repository = new InMemoryProjectRepository();
+            var service = new BacklogService(repository);
+            var project = new Project("Test project");
+
+            repository.Add(project);
+
+            var item = service.CreateTask(project.Id, "New Task", "Task Description");
+
+            Assert.Single(project.BacklogItems);
+            Assert.Equal("Task", item.Type);
+            Assert.Equal("New Task", item.Title);
+            Assert.Equal("To Do", item.CurrentState.Name);
+        }
+
+        [Fact]
+        public void CreateSpike_Adds_Spike_To_Project()
+        {
+            var repository = new InMemoryProjectRepository();
+            var service = new BacklogService(repository);
+            var project = new Project("Test project");
+
+            repository.Add(project);
+
+            var item = service.CreateSpike(project.Id, "New Spike", "Spike Description");
+
+            Assert.Single(project.BacklogItems);
+            Assert.Equal("Spike", item.Type);
+            Assert.Equal("New Spike", item.Title);
+            Assert.Equal("To Do", item.CurrentState.Name);
         }
 
         [Fact]
@@ -145,7 +181,7 @@ namespace Tests.Application
         }
 
         [Fact]
-        public void StartWork_Changes_BacklogItem_State()
+        public void StartWork_Changes_BacklogItem_State_To_Doing()
         {
             var repository = new InMemoryProjectRepository();
             var service = new BacklogService(repository);
@@ -156,7 +192,7 @@ namespace Tests.Application
 
             service.StartWork(project.Id, item.Id);
 
-            Assert.Equal("In Progress", item.CurrentState.Name);
+            Assert.Equal("Doing", item.CurrentState.Name);
         }
 
         [Fact]
@@ -183,7 +219,7 @@ namespace Tests.Application
         }
 
         [Fact]
-        public void MoveToTesting_Changes_BacklogItem_State()
+        public void MoveToReadyForTesting_Changes_BacklogItem_State()
         {
             var repository = new InMemoryProjectRepository();
             var service = new BacklogService(repository);
@@ -193,23 +229,63 @@ namespace Tests.Application
             var item = service.CreateStory(project.Id, "New Story", "Description");
             service.StartWork(project.Id, item.Id);
 
-            service.MoveToTesting(project.Id, item.Id);
+            service.MoveToReadyForTesting(project.Id, item.Id);
+
+            Assert.Equal("Ready For Testing", item.CurrentState.Name);
+        }
+
+        [Fact]
+        public void MoveToReadyForTesting_WithUnknownProject_ThrowsInvalidOperationException()
+        {
+            var repository = new InMemoryProjectRepository();
+            var service = new BacklogService(repository);
+
+            Assert.Throws<InvalidOperationException>(() =>
+                service.MoveToReadyForTesting(Guid.NewGuid(), Guid.NewGuid()));
+        }
+
+        [Fact]
+        public void MoveToReadyForTesting_WithUnknownItem_ThrowsInvalidOperationException()
+        {
+            var repository = new InMemoryProjectRepository();
+            var service = new BacklogService(repository);
+            var project = new Project("Test project");
+
+            repository.Add(project);
+
+            Assert.Throws<InvalidOperationException>(() =>
+                service.MoveToReadyForTesting(project.Id, Guid.NewGuid()));
+        }
+
+        [Fact]
+        public void StartTesting_Changes_BacklogItem_State_To_Testing()
+        {
+            var repository = new InMemoryProjectRepository();
+            var service = new BacklogService(repository);
+            var project = new Project("Test project");
+
+            repository.Add(project);
+            var item = service.CreateStory(project.Id, "New Story", "Description");
+            service.StartWork(project.Id, item.Id);
+            service.MoveToReadyForTesting(project.Id, item.Id);
+
+            service.StartTesting(project.Id, item.Id);
 
             Assert.Equal("Testing", item.CurrentState.Name);
         }
 
         [Fact]
-        public void MoveToTesting_WithUnknownProject_ThrowsInvalidOperationException()
+        public void StartTesting_WithUnknownProject_ThrowsInvalidOperationException()
         {
             var repository = new InMemoryProjectRepository();
             var service = new BacklogService(repository);
 
             Assert.Throws<InvalidOperationException>(() =>
-                service.MoveToTesting(Guid.NewGuid(), Guid.NewGuid()));
+                service.StartTesting(Guid.NewGuid(), Guid.NewGuid()));
         }
 
         [Fact]
-        public void MoveToTesting_WithUnknownItem_ThrowsInvalidOperationException()
+        public void StartTesting_WithUnknownItem_ThrowsInvalidOperationException()
         {
             var repository = new InMemoryProjectRepository();
             var service = new BacklogService(repository);
@@ -218,11 +294,11 @@ namespace Tests.Application
             repository.Add(project);
 
             Assert.Throws<InvalidOperationException>(() =>
-                service.MoveToTesting(project.Id, Guid.NewGuid()));
+                service.StartTesting(project.Id, Guid.NewGuid()));
         }
 
         [Fact]
-        public void Complete_Changes_BacklogItem_State_To_Done()
+        public void ApproveTesting_Changes_BacklogItem_State_To_Tested()
         {
             var repository = new InMemoryProjectRepository();
             var service = new BacklogService(repository);
@@ -231,34 +307,95 @@ namespace Tests.Application
             repository.Add(project);
             var item = service.CreateStory(project.Id, "New Story", "Description");
             service.StartWork(project.Id, item.Id);
-            service.MoveToTesting(project.Id, item.Id);
+            service.MoveToReadyForTesting(project.Id, item.Id);
+            service.StartTesting(project.Id, item.Id);
 
-            service.Complete(project.Id, item.Id);
+            service.ApproveTesting(project.Id, item.Id);
 
-            Assert.Equal("Done", item.CurrentState.Name);
+            Assert.Equal("Tested", item.CurrentState.Name);
         }
 
         [Fact]
-        public void Complete_WithUnknownProject_ThrowsInvalidOperationException()
-        {
-            var repository = new InMemoryProjectRepository();
-            var service = new BacklogService(repository);
-
-            Assert.Throws<InvalidOperationException>(() =>
-                service.Complete(Guid.NewGuid(), Guid.NewGuid()));
-        }
-
-        [Fact]
-        public void Complete_WithUnknownItem_ThrowsInvalidOperationException()
+        public void RejectTesting_Changes_BacklogItem_State_Back_To_ToDo()
         {
             var repository = new InMemoryProjectRepository();
             var service = new BacklogService(repository);
             var project = new Project("Test project");
 
             repository.Add(project);
+            var item = service.CreateStory(project.Id, "New Story", "Description");
+            service.StartWork(project.Id, item.Id);
+            service.MoveToReadyForTesting(project.Id, item.Id);
+            service.StartTesting(project.Id, item.Id);
+
+            service.RejectTesting(project.Id, item.Id);
+
+            Assert.Equal("To Do", item.CurrentState.Name);
+        }
+
+        [Fact]
+        public void ApproveDone_Changes_BacklogItem_State_To_Done_When_All_Activities_Are_Completed()
+        {
+            var repository = new InMemoryProjectRepository();
+            var service = new BacklogService(repository);
+            var project = new Project("Test project");
+
+            repository.Add(project);
+            var item = service.CreateStory(project.Id, "New Story", "Description");
+
+            service.AddActivityToBacklogItem(project.Id, item.Id, "Implement feature");
+            var activity = item.Activities.First();
+            item.CompleteActivity(activity.Id);
+
+            service.StartWork(project.Id, item.Id);
+            service.MoveToReadyForTesting(project.Id, item.Id);
+            service.StartTesting(project.Id, item.Id);
+            service.ApproveTesting(project.Id, item.Id);
+
+            service.ApproveDone(project.Id, item.Id);
+
+            Assert.Equal("Done", item.CurrentState.Name);
+        }
+
+        [Fact]
+        public void ApproveDone_Without_Completed_Activities_ThrowsInvalidOperationException()
+        {
+            var repository = new InMemoryProjectRepository();
+            var service = new BacklogService(repository);
+            var project = new Project("Test project");
+
+            repository.Add(project);
+            var item = service.CreateStory(project.Id, "New Story", "Description");
+
+            service.AddActivityToBacklogItem(project.Id, item.Id, "Implement feature");
+
+            service.StartWork(project.Id, item.Id);
+            service.MoveToReadyForTesting(project.Id, item.Id);
+            service.StartTesting(project.Id, item.Id);
+            service.ApproveTesting(project.Id, item.Id);
 
             Assert.Throws<InvalidOperationException>(() =>
-                service.Complete(project.Id, Guid.NewGuid()));
+                service.ApproveDone(project.Id, item.Id));
+        }
+
+        [Fact]
+        public void RejectDone_Changes_BacklogItem_State_Back_To_ReadyForTesting()
+        {
+            var repository = new InMemoryProjectRepository();
+            var service = new BacklogService(repository);
+            var project = new Project("Test project");
+
+            repository.Add(project);
+            var item = service.CreateStory(project.Id, "New Story", "Description");
+
+            service.StartWork(project.Id, item.Id);
+            service.MoveToReadyForTesting(project.Id, item.Id);
+            service.StartTesting(project.Id, item.Id);
+            service.ApproveTesting(project.Id, item.Id);
+
+            service.RejectDone(project.Id, item.Id);
+
+            Assert.Equal("Ready For Testing", item.CurrentState.Name);
         }
     }
 }

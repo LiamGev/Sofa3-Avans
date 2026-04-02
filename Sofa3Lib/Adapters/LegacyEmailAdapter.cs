@@ -2,7 +2,7 @@
 
 namespace Domain.Adapters
 {
-    public class LegacyEmailAdapter : INotificationObserver
+    public class LegacyEmailAdapter : INotificationChannel
     {
         private readonly LegacyEmailService _legacyEmailService;
 
@@ -11,7 +11,7 @@ namespace Domain.Adapters
             _legacyEmailService = legacyEmailService;
         }
 
-        public void Update(string message)
+        public void Send(string message)
         {
             _legacyEmailService.SendLegacy(message);
         }

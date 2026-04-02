@@ -39,6 +39,32 @@ namespace App.Services
             return item;
         }
 
+        public BacklogItem CreateTask(Guid projectId, string title, string description)
+        {
+            var project = GetProject(projectId);
+
+            IBacklogItemFactory factory = new Domain.Factories.TaskFactory();
+            var item = factory.Create(title, description);
+
+            project.AddBacklogItem(item);
+            _projectRepository.Update(project);
+
+            return item;
+        }
+
+        public BacklogItem CreateSpike(Guid projectId, string title, string description)
+        {
+            var project = GetProject(projectId);
+
+            IBacklogItemFactory factory = new Domain.Factories.SpikeFactory();
+            var item = factory.Create(title, description);
+
+            project.AddBacklogItem(item);
+            _projectRepository.Update(project);
+
+            return item;
+        }
+
         public void AddActivityToBacklogItem(Guid projectId, Guid backlogItemId, string activityTitle)
         {
             var project = GetProject(projectId);
@@ -66,21 +92,57 @@ namespace App.Services
             _projectRepository.Update(project);
         }
 
-        public void MoveToTesting(Guid projectId, Guid backlogItemId)
+        public void MoveToReadyForTesting(Guid projectId, Guid backlogItemId)
         {
             var project = GetProject(projectId);
             var item = GetBacklogItem(project, backlogItemId);
 
-            item.MoveToTesting();
+            item.MoveToReadyForTesting();
             _projectRepository.Update(project);
         }
 
-        public void Complete(Guid projectId, Guid backlogItemId)
+        public void StartTesting(Guid projectId, Guid backlogItemId)
         {
             var project = GetProject(projectId);
             var item = GetBacklogItem(project, backlogItemId);
 
-            item.Complete();
+            item.StartTesting();
+            _projectRepository.Update(project);
+        }
+
+        public void ApproveTesting(Guid projectId, Guid backlogItemId)
+        {
+            var project = GetProject(projectId);
+            var item = GetBacklogItem(project, backlogItemId);
+
+            item.ApproveTesting();
+            _projectRepository.Update(project);
+        }
+
+        public void RejectTesting(Guid projectId, Guid backlogItemId)
+        {
+            var project = GetProject(projectId);
+            var item = GetBacklogItem(project, backlogItemId);
+
+            item.RejectTesting();
+            _projectRepository.Update(project);
+        }
+
+        public void ApproveDone(Guid projectId, Guid backlogItemId)
+        {
+            var project = GetProject(projectId);
+            var item = GetBacklogItem(project, backlogItemId);
+
+            item.ApproveDone();
+            _projectRepository.Update(project);
+        }
+
+        public void RejectDone(Guid projectId, Guid backlogItemId)
+        {
+            var project = GetProject(projectId);
+            var item = GetBacklogItem(project, backlogItemId);
+
+            item.RejectDone();
             _projectRepository.Update(project);
         }
 

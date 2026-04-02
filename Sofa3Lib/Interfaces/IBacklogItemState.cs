@@ -7,7 +7,11 @@ namespace Domain.Interfaces
         string Name { get; }
 
         void Start(BacklogItem item);
-        void MoveToTesting(BacklogItem item);
-        void Complete(BacklogItem item);
+        void MoveToReadyForTesting(BacklogItem item);
+        void StartTesting(BacklogItem item);
+        void ApproveTesting(BacklogItem item);
+        void RejectTesting(BacklogItem item);
+        void ApproveDone(BacklogItem item);
+        void RejectDone(BacklogItem item);
     }
 }

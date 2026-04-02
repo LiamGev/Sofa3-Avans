@@ -3,33 +3,33 @@ using Domain.Interfaces;
 
 namespace Domain.States
 {
-    public class ToDoState : IBacklogItemState
+    public class ReadyForTestingState : IBacklogItemState
     {
-        public string Name => "To Do";
+        public string Name => "Ready For Testing";
 
         public void Start(BacklogItem item)
         {
-            item.SetState(new DoingState());
+            throw new InvalidOperationException("Item is already being worked on.");
         }
 
         public void MoveToReadyForTesting(BacklogItem item)
         {
-            throw new InvalidOperationException("Cannot move directly from To Do to Ready For Testing.");
+            throw new InvalidOperationException("Item is already ready for testing.");
         }
 
         public void StartTesting(BacklogItem item)
         {
-            throw new InvalidOperationException("Cannot start testing from To Do.");
+            item.SetState(new TestingState());
         }
 
         public void ApproveTesting(BacklogItem item)
         {
-            throw new InvalidOperationException("Testing has not started yet.");
+            throw new InvalidOperationException("Testing must start first.");
         }
 
         public void RejectTesting(BacklogItem item)
         {
-            throw new InvalidOperationException("Testing has not started yet.");
+            throw new InvalidOperationException("Testing must start first.");
         }
 
         public void ApproveDone(BacklogItem item)

@@ -17,6 +17,7 @@ namespace Domain.Templates
             Validate();
             Prepare();
             RunPipeline();
+            PublishResults();
             FinalizeProcess();
 
             return Steps;
@@ -35,6 +36,11 @@ namespace Domain.Templates
         protected virtual void RunPipeline()
         {
             Steps.AddRange(Pipeline.Run());
+        }
+
+        protected virtual void PublishResults()
+        {
+            Steps.Add("Publish results");
         }
 
         protected virtual void FinalizeProcess()

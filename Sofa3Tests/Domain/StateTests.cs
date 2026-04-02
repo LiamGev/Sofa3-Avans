@@ -7,52 +7,128 @@ namespace Tests.Domain
     public class StateTests
     {
         [Fact]
-        public void BacklogItem_Can_Move_From_ToDo_To_InProgress()
+        public void BacklogItem_Can_Move_From_ToDo_To_Doing()
         {
             var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
 
             item.StartWork();
 
-            Assert.Equal("In Progress", item.CurrentState.Name);
+            Assert.Equal("Doing", item.CurrentState.Name);
         }
 
         [Fact]
-        public void BacklogItem_Can_Move_From_InProgress_To_Testing()
+        public void BacklogItem_Can_Move_From_Doing_To_ReadyForTesting()
         {
             var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
             item.StartWork();
 
-            item.MoveToTesting();
+            item.MoveToReadyForTesting();
+
+            Assert.Equal("Ready For Testing", item.CurrentState.Name);
+        }
+
+        [Fact]
+        public void BacklogItem_Can_Move_From_ReadyForTesting_To_Testing()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+            item.StartWork();
+            item.MoveToReadyForTesting();
+
+            item.StartTesting();
 
             Assert.Equal("Testing", item.CurrentState.Name);
         }
 
         [Fact]
-        public void BacklogItem_Can_Move_From_Testing_To_Done()
+        public void BacklogItem_Can_Move_From_Testing_To_Tested()
         {
             var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
             item.StartWork();
-            item.MoveToTesting();
+            item.MoveToReadyForTesting();
+            item.StartTesting();
 
-            item.Complete();
+            item.ApproveTesting();
+
+            Assert.Equal("Tested", item.CurrentState.Name);
+        }
+
+        [Fact]
+        public void BacklogItem_Can_Move_From_Tested_To_Done_When_All_Activities_Are_Completed()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+
+            item.AddActivity("Implement feature");
+            var activity = item.Activities.First();
+            item.CompleteActivity(activity.Id);
+
+            item.StartWork();
+            item.MoveToReadyForTesting();
+            item.StartTesting();
+            item.ApproveTesting();
+
+            item.ApproveDone();
 
             Assert.Equal("Done", item.CurrentState.Name);
         }
 
         [Fact]
-        public void BacklogItem_Cannot_Complete_Directly_From_ToDo()
+        public void BacklogItem_Cannot_ApproveDone_Without_Completed_Activities()
         {
             var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
 
-            Assert.Throws<InvalidOperationException>(() => item.Complete());
+            item.AddActivity("Implement feature");
+
+            item.StartWork();
+            item.MoveToReadyForTesting();
+            item.StartTesting();
+            item.ApproveTesting();
+
+            Assert.Throws<InvalidOperationException>(() => item.ApproveDone());
         }
 
         [Fact]
-        public void BacklogItem_Cannot_Move_To_Testing_Directly_From_ToDo()
+        public void BacklogItem_Cannot_Move_To_ReadyForTesting_Directly_From_ToDo()
         {
             var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
 
-            Assert.Throws<InvalidOperationException>(() => item.MoveToTesting());
+            Assert.Throws<InvalidOperationException>(() => item.MoveToReadyForTesting());
+        }
+
+        [Fact]
+        public void BacklogItem_Cannot_StartTesting_Directly_From_ToDo()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+
+            Assert.Throws<InvalidOperationException>(() => item.StartTesting());
+        }
+
+        [Fact]
+        public void BacklogItem_RejectTesting_Moves_Back_To_ToDo()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+
+            item.StartWork();
+            item.MoveToReadyForTesting();
+            item.StartTesting();
+
+            item.RejectTesting();
+
+            Assert.Equal("To Do", item.CurrentState.Name);
+        }
+
+        [Fact]
+        public void BacklogItem_RejectDone_Moves_Back_To_ReadyForTesting()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+
+            item.StartWork();
+            item.MoveToReadyForTesting();
+            item.StartTesting();
+            item.ApproveTesting();
+
+            item.RejectDone();
+
+            Assert.Equal("Ready For Testing", item.CurrentState.Name);
         }
     }
 }

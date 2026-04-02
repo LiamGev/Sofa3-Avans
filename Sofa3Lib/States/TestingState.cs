@@ -9,17 +9,38 @@ namespace Domain.States
 
         public void Start(BacklogItem item)
         {
-            throw new InvalidOperationException("Item is already beyond In Progress.");
+            throw new InvalidOperationException("Item is already beyond Doing.");
         }
 
-        public void MoveToTesting(BacklogItem item)
+        public void MoveToReadyForTesting(BacklogItem item)
         {
-            throw new InvalidOperationException("Item is already in Testing.");
+            throw new InvalidOperationException("Item is already in testing.");
         }
 
-        public void Complete(BacklogItem item)
+        public void StartTesting(BacklogItem item)
         {
-            item.SetState(new DoneState());
+            throw new InvalidOperationException("Testing has already started.");
+        }
+
+        public void ApproveTesting(BacklogItem item)
+        {
+            item.SetState(new TestedState());
+        }
+
+        public void RejectTesting(BacklogItem item)
+        {
+            item.SetState(new ToDoState());
+            item.NotifyObservers($"Testing failed for '{item.Title}'. Scrum master should be informed.");
+        }
+
+        public void ApproveDone(BacklogItem item)
+        {
+            throw new InvalidOperationException("Item must first become Tested.");
+        }
+
+        public void RejectDone(BacklogItem item)
+        {
+            throw new InvalidOperationException("Item must first become Tested.");
         }
     }
 }
