@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Domain.SprintStates
 {
+    // Concrete State:
+    // Deze eindtoestand maakt duidelijk dat een mislukte of geannuleerde release
+    // niet zomaar terug de normale sprintflow in kan.
     public class CancelledSprintState : ISprintState
     {
         public string Name => "Cancelled";

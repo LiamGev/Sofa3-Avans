@@ -3,6 +3,10 @@ using Domain.Interfaces;
 
 namespace Domain.States
 {
+    // Concrete State:
+    // Deze state bevat de regels tijdens de testfase.
+    // Goedkeuren leidt naar Tested; afkeuren stuurt het item terug naar To Do,
+    // zoals in de opdrachttekst is beschreven.
     public class TestingState : IBacklogItemState
     {
         public string Name => "Testing";

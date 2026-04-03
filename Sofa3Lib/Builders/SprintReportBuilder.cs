@@ -3,8 +3,14 @@ using Domain.Interfaces;
 
 namespace Domain.Builders
 {
+    // Builder pattern:
+    // Deze builder bouwt een SprintReport stap voor stap op.
+    // Dat is passend omdat een rapport uit meerdere optionele onderdelen bestaat,
+    // zoals header, footer, teaminfo en samenvattingen.
     public class SprintReportBuilder : ISprintReportBuilder
     {
+        // Builder pattern:
+        // Dit is het product dat tijdens meerdere builder-stappen geleidelijk wordt samengesteld.
         private readonly SprintReport _report = new();
 
         public ISprintReportBuilder AddHeader(string header)
@@ -40,6 +46,8 @@ namespace Domain.Builders
             return this;
         }
 
+        // Builder pattern:
+        // Pas aan het einde wordt het volledig opgebouwde rapport teruggegeven aan de client.
         public SprintReport Build()
         {
             return _report;

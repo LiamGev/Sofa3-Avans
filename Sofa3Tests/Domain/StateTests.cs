@@ -4,6 +4,9 @@ using Xunit;
 
 namespace Tests.Domain
 {
+    // State pattern tests:
+    // Deze tests controleren of alleen geldige statusovergangen worden toegestaan
+    // en of ongeldige overgangen correct worden geblokkeerd.
     public class StateTests
     {
         [Fact]

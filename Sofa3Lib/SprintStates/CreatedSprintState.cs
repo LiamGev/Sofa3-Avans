@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Domain.SprintStates
 {
+    // Concrete State:
+    // De sprint is aangemaakt maar nog niet actief.
+    // Alleen vanuit deze toestand mag de sprint gestart worden.
     public class CreatedSprintState : ISprintState
     {
         public string Name => "Created";

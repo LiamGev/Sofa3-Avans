@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Domain.States
 {
+    // Concrete State:
+    // Deze klasse bevat het gedrag dat geldig is wanneer een backlog item in To Do staat.
+    // Alleen toegestane overgangen worden hier toegestaan; ongeldige acties geven een fout.
     public class ToDoState : IBacklogItemState
     {
         public string Name => "To Do";

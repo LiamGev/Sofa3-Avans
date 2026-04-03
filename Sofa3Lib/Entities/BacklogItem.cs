@@ -2,10 +2,19 @@
 
 namespace Domain.Entities
 {
+    // Context class voor het State pattern en subject voor het Observer pattern.
+    // BacklogItem bewaart de huidige status in `CurrentState` en delegeert gedrag
+    // zoals StartWork en ApproveDone naar dat state-object.
+    // Daarnaast houdt deze klasse observers bij die meldingen ontvangen bij statuswijzigingen.
+
     public class BacklogItem
     {
         private readonly List<TaskActivity> _activities = new();
         private readonly List<Message> _messages = new();
+
+        // Observer pattern:
+        // De lijst met observers bevat alle luisteraars die notificaties moeten ontvangen,
+        // bijvoorbeeld e-mail- of Slack-observers.
         private readonly List<INotificationObserver> _observers = new();
         private readonly List<string> _linkedCommits = new();
         private readonly List<string> _linkedBranches = new();
@@ -30,6 +39,10 @@ namespace Domain.Entities
         public IReadOnlyCollection<INotificationObserver> Observers => _observers.AsReadOnly();
         public IReadOnlyCollection<string> LinkedCommits => _linkedCommits.AsReadOnly();
         public IReadOnlyCollection<string> LinkedBranches => _linkedBranches.AsReadOnly();
+
+        // State pattern:
+        // De actuele backlogstatus wordt niet als string-logica afgehandeld,
+        // maar als apart state-object met eigen gedrag en transitieregels.
 
         public IBacklogItemState CurrentState { get; private set; }
 
@@ -140,6 +153,10 @@ namespace Domain.Entities
                 _linkedBranches.Add(branchName);
         }
 
+        // Observer pattern:
+        // Via deze methode kan een observer zich registreren om statusupdates te ontvangen.
+        // Zo blijft BacklogItem losgekoppeld van concrete notificatiekanalen.
+
         public void AttachObserver(INotificationObserver observer)
         {
             if (observer == null)
@@ -148,6 +165,10 @@ namespace Domain.Entities
             _observers.Add(observer);
         }
 
+        // Observer pattern:
+        // Het backlog item stuurt meldingen naar alle geregistreerde observers.
+        // Daardoor kan één gebeurtenis meerdere notificatiekanalen activeren.
+
         public void NotifyObservers(string message)
         {
             foreach (var observer in _observers)
@@ -155,6 +176,11 @@ namespace Domain.Entities
                 observer.Update(message);
             }
         }
+
+        // State pattern:
+        // De context wisselt hier van state-object. Het concrete gedrag verandert hierdoor
+        // zonder dat de clientcode hoeft te weten welke regels per status gelden.
+        // Na de transitie wordt meteen een notificatie verstuurd via het Observer pattern.
 
         public void SetState(IBacklogItemState newState)
         {
@@ -179,6 +205,10 @@ namespace Domain.Entities
             NotifyObservers($"Backlog item '{Title}' was reopened.");
         }
 
+        // State pattern:
+        // Deze methodes delegeren de business rules aan het actieve state-object.
+        // Daardoor zitten overgangsregels niet verspreid in één grote if/switch,
+        // maar in losse klassen per toestand.
         public void StartWork() => CurrentState.Start(this);
         public void MoveToReadyForTesting() => CurrentState.MoveToReadyForTesting(this);
         public void StartTesting() => CurrentState.StartTesting(this);

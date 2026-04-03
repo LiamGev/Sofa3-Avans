@@ -8,6 +8,8 @@ using Xunit;
 
 namespace Tests.Domain
 {
+    // Hier wordt Moq gebruikt om te verifiëren dat observers correct worden aangeroepen,
+    // zonder afhankelijk te zijn van een concrete notificatie-implementatie.
     public class ObserverTests
     {
         [Fact]

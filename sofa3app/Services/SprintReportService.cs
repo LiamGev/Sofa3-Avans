@@ -5,6 +5,9 @@ namespace App.Services
 {
     public class SprintReportService
     {
+        // Builder pattern usage:
+        // De service stelt hier een rapport samen via een fluent builder-interface.
+        // Dit maakt de opbouw leesbaar en uitbreidbaar zonder telescoping constructors.
         public string GenerateDefaultReport(Sprint sprint)
         {
             var builder = new SprintReportBuilder();

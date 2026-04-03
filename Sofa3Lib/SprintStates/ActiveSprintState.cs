@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Domain.SprintStates
 {
+    // Concrete State:
+    // Deze state representeert een lopende sprint.
+    // De sprint kan hierna alleen nog naar Finished gaan en niet direct releasen of sluiten.
     public class ActiveSprintState : ISprintState
     {
         public string Name => "Active";

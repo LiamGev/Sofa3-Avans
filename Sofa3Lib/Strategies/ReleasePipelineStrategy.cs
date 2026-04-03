@@ -2,6 +2,9 @@
 
 namespace Domain.Strategies
 {
+    // Concrete Strategy:
+    // Deze strategie modelleert een releasegerichte pipeline met stappen
+    // van source ophalen tot deployment.
     public class ReleasePipelineStrategy : IPipelineStrategy
     {
         public List<string> Execute()

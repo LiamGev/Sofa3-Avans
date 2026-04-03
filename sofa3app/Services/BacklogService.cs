@@ -13,6 +13,11 @@ namespace App.Services
             _projectRepository = projectRepository;
         }
 
+        // Factory Method usage:
+        // De service gebruikt hier een factory in plaats van direct `new BacklogItem(...)`.
+        // Daardoor blijft de service afhankelijk van het abstracte aanmaakconcept
+        // en niet van de concrete configuratie van een Story item.
+
         public BacklogItem CreateStory(Guid projectId, string title, string description)
         {
             var project = GetProject(projectId);
@@ -25,6 +30,11 @@ namespace App.Services
 
             return item;
         }
+
+        // Factory Method usage:
+        // Ook voor Bugs wordt de objectcreatie gedelegeerd aan een aparte factory.
+        // Zo blijft de service verantwoordelijk voor workflow en opslag,
+        // terwijl de factory verantwoordelijk is voor de juiste objectcreatie.
 
         public BacklogItem CreateBug(Guid projectId, string title, string description)
         {
@@ -39,6 +49,10 @@ namespace App.Services
             return item;
         }
 
+        // Factory Method usage:
+        // De keuze voor een aparte TaskFactory voorkomt conditionele logica in de service,
+        // zoals if/switch op itemtypes. Dat maakt de code onderhoudbaarder.
+
         public BacklogItem CreateTask(Guid projectId, string title, string description)
         {
             var project = GetProject(projectId);
@@ -51,6 +65,10 @@ namespace App.Services
 
             return item;
         }
+
+        // Factory Method usage:
+        // Nieuwe backlog-itemtypes kunnen later worden toegevoegd door een nieuwe factory te maken,
+        // zonder bestaande servicelogica aan te passen.
 
         public BacklogItem CreateSpike(Guid projectId, string title, string description)
         {

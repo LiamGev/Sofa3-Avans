@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Domain.SprintStates
 {
+    // Concrete State:
+    // Deze state representeert een sprint waarvan de release loopt.
+    // Tijdens deze fase zijn alleen release-gerelateerde acties toegestaan.
     public class ReleasingSprintState : ISprintState
     {
         public string Name => "Releasing";

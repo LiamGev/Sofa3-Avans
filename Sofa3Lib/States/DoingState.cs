@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Domain.States
 {
+    // Concrete State:
+    // Deze state representeert werk in uitvoering.
+    // Vanuit hier mag het item naar Ready For Testing, conform de Scrum-flow uit de opdracht.
     public class DoingState : IBacklogItemState
     {
         public string Name => "Doing";
@@ -12,6 +15,9 @@ namespace Domain.States
             throw new InvalidOperationException("Item is already in progress.");
         }
 
+        // State + Observer:
+        // Bij deze overgang verandert niet alleen de status,
+        // maar worden testers ook direct geïnformeerd via observers.
         public void MoveToReadyForTesting(BacklogItem item)
         {
             item.SetState(new ReadyForTestingState());

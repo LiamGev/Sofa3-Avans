@@ -3,6 +3,10 @@ using Domain.Interfaces;
 
 namespace Domain.States
 {
+
+    // Concrete State:
+    // In deze toestand is het item functioneel getest,
+    // maar nog niet definitief Done totdat ook de definition of done is goedgekeurd.
     public class TestedState : IBacklogItemState
     {
         public string Name => "Tested";
@@ -32,6 +36,10 @@ namespace Domain.States
             throw new InvalidOperationException("Testing is already completed.");
         }
 
+        // State pattern:
+        // Deze overgang bevat extra business rules:
+        // een item mag alleen Done worden als alle onderliggende activiteiten voltooid zijn.
+        // Daardoor zit domeinlogica in de state en niet in losse clientcode.
         public void ApproveDone(BacklogItem item)
         {
             if (!item.AreAllActivitiesCompleted())

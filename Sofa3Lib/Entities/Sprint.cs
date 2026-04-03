@@ -3,6 +3,10 @@ using Domain.SprintStates;
 
 namespace Domain.Entities
 {
+    // Context class voor het Sprint State pattern.
+    // Sprint bewaart zijn huidige lifecycle-status in `CurrentState`
+    // en delegeert statusafhankelijke acties zoals starten, finishen en releasen.
+
     public class Sprint
     {
         private readonly List<BacklogItem> _backlogItems = new();
@@ -13,6 +17,10 @@ namespace Domain.Entities
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
         public string SprintType { get; private set; }
+
+        // State pattern:
+        // De sprintstatus is gemodelleerd als object in plaats van als losse enum-switches,
+        // zodat overgangsregels per sprintfase in aparte klassen staan.
         public ISprintState CurrentState { get; private set; }
         public Pipeline? Pipeline { get; private set; }
         public string? ReviewSummary { get; private set; }
@@ -70,6 +78,10 @@ namespace Domain.Entities
             _developers.Add(developer);
         }
 
+
+        // Domeinregel gekoppeld aan de sprint-state:
+        // backlog items mogen alleen toegevoegd worden zolang de sprint nog in Created staat.
+        // Dit sluit aan op de casus waarin een actieve sprint niet meer vrij wijzigbaar is.
         public void AddBacklogItem(BacklogItem item)
         {
             if (item == null)
@@ -114,11 +126,17 @@ namespace Domain.Entities
             return true;
         }
 
+
+        // State pattern:
+        // Hiermee wisselt de Sprint-context naar een andere concrete state.
         public void SetState(ISprintState state)
         {
             CurrentState = state ?? throw new ArgumentNullException(nameof(state));
         }
 
+        // State pattern:
+        // Deze methodes delegeren lifecycle-gedrag aan de huidige sprint-state.
+        // Daardoor worden de regels per sprintfase netjes opgesplitst.
         public void StartSprint() => CurrentState.StartSprint(this);
         public void FinishSprint() => CurrentState.FinishSprint(this);
         public void StartRelease() => CurrentState.StartRelease(this);

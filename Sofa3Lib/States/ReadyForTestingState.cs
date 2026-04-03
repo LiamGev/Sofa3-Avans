@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Domain.States
 {
+    // Concrete State:
+    // Deze state bewaakt de regels voor items die klaarstaan om getest te worden.
+    // Hiermee wordt de casusregel afgedwongen dat testen pas start na Ready For Testing.
     public class ReadyForTestingState : IBacklogItemState
     {
         public string Name => "Ready For Testing";

@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Domain.States
 {
+    // Concrete State:
+    // Deze state voorkomt dat een afgerond item zomaar opnieuw de normale flow in gaat.
+    // Alleen expliciete afkeuring kan het item terugzetten naar To Do.
     public class DoneState : IBacklogItemState
     {
         public string Name => "Done";

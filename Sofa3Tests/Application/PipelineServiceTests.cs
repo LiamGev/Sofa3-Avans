@@ -3,6 +3,9 @@ using Xunit;
 
 namespace Tests.Application
 {
+    // Unit tests voor cruciale domein- en applicatielogica.
+    // Deze tests verifiëren de pipeline-flow en de volgorde van stappen,
+    // wat belangrijk is voor de business rules van de DevOps-casus.
     public class PipelineServiceTests
     {
         [Fact]

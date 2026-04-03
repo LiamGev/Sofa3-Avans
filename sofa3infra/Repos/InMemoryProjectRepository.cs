@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Infra.Repos
 {
+    // Fake repository:
+    // De opdracht staat een eenvoudige repository-implementatie in geheugen toe
+    // om de application core te kunnen testen zonder echte database.
     public class InMemoryProjectRepository : IProjectRepository
     {
         private readonly List<Project> _projects = new();

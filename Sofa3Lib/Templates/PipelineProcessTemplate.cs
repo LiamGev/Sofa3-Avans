@@ -2,6 +2,10 @@
 
 namespace Domain.Templates
 {
+    // Template Method pattern:
+    // Deze abstracte klasse definieert het vaste algoritmeskelet voor pipeline-uitvoering:
+    // valideren, voorbereiden, uitvoeren, resultaten publiceren en afronden.
+    // Subclasses mogen alleen specifieke stappen aanpassen.
     public abstract class PipelineProcessTemplate
     {
         protected readonly Pipeline Pipeline;
@@ -12,6 +16,9 @@ namespace Domain.Templates
             Pipeline = pipeline ?? throw new ArgumentNullException(nameof(pipeline));
         }
 
+        // Template Method:
+        // De volgorde van het proces ligt hier vast.
+        // Dat voorkomt dat subclasses de essentiële workflow kunnen doorbreken.
         public List<string> Execute()
         {
             Validate();

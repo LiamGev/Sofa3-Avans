@@ -3,6 +3,9 @@ using Domain.Interfaces;
 
 namespace Domain.SprintStates
 {
+    // Concrete State:
+    // Een afgeronde sprint kan nu, afhankelijk van het type en de configuratie,
+    // worden gesloten of een releaseproces starten.
     public class FinishedSprintState : ISprintState
     {
         public string Name => "Finished";
@@ -11,6 +14,9 @@ namespace Domain.SprintStates
 
         public void FinishSprint(Sprint sprint) => throw new InvalidOperationException("Sprint is already finished.");
 
+        // State pattern:
+        // Release starten is alleen toegestaan als een pipeline aan de sprint gekoppeld is.
+        // Daarmee wordt een belangrijke business rule uit de casus centraal afgedwongen.
         public void StartRelease(Sprint sprint)
         {
             if (!sprint.SprintType.Equals("Release", StringComparison.OrdinalIgnoreCase))
