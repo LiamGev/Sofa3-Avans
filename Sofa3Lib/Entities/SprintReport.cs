@@ -20,5 +20,20 @@
 
             return string.Join(Environment.NewLine, lines);
         }
+
+        // Stub-export zoals toegestaan in de opdracht.
+        public string Export(string format)
+        {
+            if (string.IsNullOrWhiteSpace(format))
+                throw new ArgumentException("Format cannot be empty.");
+
+            return format.ToLowerInvariant() switch
+            {
+                "txt" => Render(),
+                "pdf" => $"[PDF EXPORT]{Environment.NewLine}{Render()}",
+                "png" => $"[PNG EXPORT]{Environment.NewLine}{Render()}",
+                _ => throw new InvalidOperationException("Unsupported export format.")
+            };
+        }
     }
 }

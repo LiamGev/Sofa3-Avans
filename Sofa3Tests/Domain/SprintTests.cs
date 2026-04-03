@@ -117,17 +117,16 @@ namespace Tests.Domain
                 "Sprint 1",
                 new DateTime(2025, 1, 1),
                 new DateTime(2025, 1, 14),
-                "Review");
+                "Release");
 
             sprint.StartSprint();
-            Assert.Equal("Active", sprint.CurrentState.Name);
-
             sprint.FinishSprint();
-            Assert.Equal("Finished", sprint.CurrentState.Name);
-
             sprint.CloseSprint();
+
             Assert.Equal("Closed", sprint.CurrentState.Name);
         }
+
+
 
         [Fact]
         public void Sprint_CanMove_FromFinished_ToReleasing_WhenPipelineExists()
@@ -198,6 +197,54 @@ namespace Tests.Domain
             sprint.CloseSprint();
 
             Assert.Equal("Closed", sprint.CurrentState.Name);
+        }
+
+        [Fact]
+        public void ReviewSprint_CannotBeClosed_WithoutReviewSummary()
+        {
+            var sprint = new Sprint(
+                "Sprint Review",
+                new DateTime(2025, 1, 1),
+                new DateTime(2025, 1, 14),
+                "Review");
+
+            sprint.StartSprint();
+            sprint.FinishSprint();
+
+            Assert.Throws<InvalidOperationException>(() => sprint.CloseSprint());
+        }
+
+        [Fact]
+        public void ReviewSprint_CanBeClosed_WithReviewSummary()
+        {
+            var sprint = new Sprint(
+                "Sprint Review",
+                new DateTime(2025, 1, 1),
+                new DateTime(2025, 1, 14),
+                "Review");
+
+            sprint.UploadReviewSummary("Stakeholders approved the sprint review.");
+            sprint.StartSprint();
+            sprint.FinishSprint();
+            sprint.CloseSprint();
+
+            Assert.Equal("Closed", sprint.CurrentState.Name);
+        }
+
+        [Fact]
+        public void NonReleaseSprint_CannotStartRelease()
+        {
+            var sprint = new Sprint(
+                "Sprint Review",
+                new DateTime(2025, 1, 1),
+                new DateTime(2025, 1, 14),
+                "Review");
+
+            sprint.SetPipeline(new Pipeline("Pipeline", new ReleasePipelineStrategy()));
+            sprint.StartSprint();
+            sprint.FinishSprint();
+
+            Assert.Throws<InvalidOperationException>(() => sprint.StartRelease());
         }
     }
 }

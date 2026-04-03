@@ -13,6 +13,9 @@ namespace Domain.SprintStates
 
         public void StartRelease(Sprint sprint)
         {
+            if (!sprint.SprintType.Equals("Release", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Only release sprints can start a release.");
+
             if (sprint.Pipeline == null)
                 throw new InvalidOperationException("Sprint must have a pipeline before release can start.");
 
@@ -20,6 +23,13 @@ namespace Domain.SprintStates
         }
 
         public void CancelRelease(Sprint sprint) => throw new InvalidOperationException("Release has not started.");
-        public void CloseSprint(Sprint sprint) => sprint.SetState(new ClosedSprintState());
+
+        public void CloseSprint(Sprint sprint)
+        {
+            if (!sprint.CanBeClosed())
+                throw new InvalidOperationException("A review sprint can only be closed after a review summary has been uploaded.");
+
+            sprint.SetState(new ClosedSprintState());
+        }
     }
 }

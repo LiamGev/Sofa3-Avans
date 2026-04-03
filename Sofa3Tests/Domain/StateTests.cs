@@ -168,5 +168,47 @@ namespace Tests.Domain
 
             Assert.Throws<InvalidOperationException>(() => item.StartWork());
         }
+
+        [Fact]
+        public void BacklogItem_CanHave_AtMostOneAssignedDeveloper()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+
+            item.AssignDeveloper("Alice");
+
+            Assert.Throws<InvalidOperationException>(() => item.AssignDeveloper("Bob"));
+        }
+
+        [Fact]
+        public void CompletedBacklogItem_LocksDiscussion()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+
+            item.AddActivity("Implement feature");
+            var activity = item.Activities.First();
+            item.CompleteActivity(activity.Id);
+
+            item.StartWork();
+            item.MoveToReadyForTesting();
+            item.StartTesting();
+            item.ApproveTesting();
+            item.ApproveDone();
+            item.MarkAsCompleted();
+
+            Assert.True(item.IsDiscussionLocked);
+            Assert.Throws<InvalidOperationException>(() => item.AddDiscussionThread("Alice", "New thread after completion"));
+        }
+
+        [Fact]
+        public void BacklogItem_Can_LinkCommit_AndBranch()
+        {
+            var item = new BacklogItem("Test item", "Description", "Story", new ToDoState());
+
+            item.LinkCommit("abc123");
+            item.LinkBranch("feature/test-item");
+
+            Assert.Contains("abc123", item.LinkedCommits);
+            Assert.Contains("feature/test-item", item.LinkedBranches);
+        }
     }
 }
